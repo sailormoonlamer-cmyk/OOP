@@ -1,15 +1,33 @@
 import random
 import datetime
 
-#Шаблон банковского счета 
 class BankAccount:
   
     def __init__(self, owner, balance = 0):
-        self.owner = owner
+        self.__owner = None
+        self.owner = owner # Через сеттер
+        
         self.balance = balance
         self.account_number = self.get_account_number()
         self.created_at = datetime.datetime.now()
         self.transaction_history = []
+    
+    # Геттер на имя владельца    
+    @property
+    def owner(self):
+        return self.__owner
+    
+    @owner.setter
+    def owner(self, value):
+        if not value or not value.strip():
+            raise ValueError("Имя владельца не может быть пустым!! ")
+        self.__owner = value.strip()
+        
+       
+        
+        
+        
+        
     
     def get_account_number(self):
         return f'{random.randint(1000,9999)}-{random.randint(1000,9999)}'
@@ -86,7 +104,7 @@ class Bank:
                 print(f"У пользователя {owner} уже есть счет {account.account_number}")
                 return None
             
-        new_account = BankAccount(owner, initial_balance)  # СОЗДАЕМ ОБЪЕКТ ОТ КЛАССА  BankAccount
+        new_account = BankAccount(owner, initial_balance)  
         
         self.accounts.append(new_account)
         
@@ -167,13 +185,15 @@ def main():
         print_menu()
         choice = input("Выберите действие: ").strip()
         
+        
+        
         if choice == '1':
             print("Создание нового счета: ")
             owner = input("Введите свое имя: ").strip()
-            if not owner:
-                print("Имя не может быть пустым!! ")
-                
-                continue
+                        # if not owner:
+                        #     print("Имя не может быть пустым!! ")
+                            
+                        #     continue
             balance = input("Введите начальный баланс: ").strip()
             if balance:
                 balance = float(balance)
@@ -182,11 +202,19 @@ def main():
                     continue
             else:
                 balance = 0
-            bank.create_account(owner, balance)  
+            try:
+                bank.create_account(owner, balance)  
+            except ValueError as e:
+                print(f'Ошибка: {e}')
+                
             print(" ")     
+         
+         
          
         elif choice == '2':
             bank.show_all_accounts()
+    
+    
     
         elif choice == "3":
             account_number = input("Введите номер счета: ").strip()
@@ -197,6 +225,8 @@ def main():
             amount = float(input("Введите сумму пополнения ").strip())
             account.deposit(amount)
             print(" ")
+           
+           
              
         elif choice == '4':
             account_number = input("Введите номер счета: ").strip()
@@ -207,6 +237,8 @@ def main():
             amount = float(input("Введите сумму снятия ").strip())
             account.withdraw(amount)
             print(" ")
+         
+         
             
         elif choice == '5':
             user1 = input("Введите номер счета отправителя: ").strip()
@@ -223,6 +255,8 @@ def main():
             from_user1.transfer(amount, to_user2)
             print(" ")
         
+        
+        
         elif choice == '6':                                                                                 
             account_number = input("Введите номер счета: ").strip()
             account = bank.find_account(account_number)                                                             
@@ -230,6 +264,8 @@ def main():
                 print("Счет не найден! ")
                 continue
             print(f'Баланс счета:{account} руб')
+           
+           
             
         elif choice == '7':
             account_number = input("Введите номер счета: ").strip()
@@ -237,6 +273,8 @@ def main():
             if not account:
                 print(f'Счет {account_number} не найден!')
                 continue
+          
+          
             
         elif choice == '8':
             account_number = input("Введите номер счета: ").strip()
@@ -245,6 +283,8 @@ def main():
                 print(account)
             else:
                 print(f'Счет {account_number} не найден!')
+          
+          
                 
         elif choice == '9':
             owner = input("Введите имя владельца: ").strip()
@@ -254,22 +294,30 @@ def main():
             else:
                 print("Счета владельца не найдены!")
         
+        
+        
         elif choice == '10':
             account_number = input("Введите номер счета: ").strip()
             if bank.delete_account(account_number):
                 print("Счет успешно закрыт!")
             else:
                 print("Счеь не удалось закрыть!")
+          
+          
             
         elif choice == '11':
             print(f'Навазние банка:{bank.name}')
             print(f'Количетсво счетов:{len(bank.accounts)}')
             print(f'Общий баланс::{bank.get_total_balance()}')
+          
+          
             
         elif choice == '0':
             print("Спасибо за использование банком!")
             break
                      
+        
+        
             
 if __name__ == "__main__":
     main()        
